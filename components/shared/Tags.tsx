@@ -48,11 +48,9 @@ export const Tag: React.FC<TagProps> = ({
   }
 
   return (
-    // <RouteLink to={`/posts?tag=${name}`}>
     <ChakraTag {...props} {...propsOverride}>
       {name}
     </ChakraTag>
-    // </RouteLink>
   )
 }
 

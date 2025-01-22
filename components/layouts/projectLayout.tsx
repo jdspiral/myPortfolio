@@ -10,12 +10,16 @@ import {
   AspectRatio,
   Image,
   Skeleton,
-  Link
+  Link as ChakraLink,
 } from '@chakra-ui/react';
+import NextLink from 'next/link';
 import { HiOutlineExternalLink } from 'react-icons/hi';
 import { AiOutlineGithub } from 'react-icons/ai';
 import { MotionBox, MotionFlex, MotionList, MotionText } from 'components/shared/animations/motion';
 
+// --------------------------------------------------
+// ProjectLayoutMed Component
+// --------------------------------------------------
 const ProjectLayoutMed = ({ project }) => {
   return (
     <Flex
@@ -32,28 +36,40 @@ const ProjectLayoutMed = ({ project }) => {
       overflow="hidden"
       position="relative"
     >
-      <a href={project.site} target="_blank" rel="noopener noreferrer">
-        <AspectRatio ratio={1.85 / 1} w="100%" h="100%" rounded="xl">
-          <Image
-            src={project.imageLight}
-            fallback={<Skeleton />}
-            width={'full'}
-            height={'full'}
+      {/* Image and Overlay Link */}
+      <NextLink href={project.site || '#'} passHref>
+        <ChakraLink
+          target="_blank"
+          rel="noopener noreferrer"
+          display="block"
+          w="100%"
+          h="100%"
+          aria-label={`Visit project site: ${project.title}`}
+        >
+          <AspectRatio ratio={1.85 / 1} w="100%" h="100%" rounded="xl">
+            <Image
+              src={project.imageLight}
+              fallback={<Skeleton />}
+              width="full"
+              height="full"
+              position="absolute"
+              rounded="xl"
+              objectFit="cover"
+              opacity={0.5}
+              _hover={{ opacity: 1 }}
+            />
+          </AspectRatio>
+          <Box
+            width="full"
+            height="full"
             position="absolute"
-            rounded="xl"
-            objectFit="cover"
-            opacity={0.5}
-            _hover={{ opacity: 1 }}
+            bg={useColorModeValue('gray.100', 'gray.900')}
+            opacity={useColorModeValue('0.5', '1')}
           />
-        </AspectRatio>
-        <Box
-          width={'full'}
-          height={'full'}
-          position="absolute"
-          bg={useColorModeValue('gray.100', 'gray.900')}
-          opacity={useColorModeValue('0.5', '1')}
-        ></Box>
-      </a>
+        </ChakraLink>
+      </NextLink>
+
+      {/* Info Section */}
       <MotionBox
         initial="initial"
         animate="animate"
@@ -66,66 +82,87 @@ const ProjectLayoutMed = ({ project }) => {
         zIndex="10"
       >
         <MotionBox variants={stagger}>
-          <a href={project.site} target="_blank" rel="noopener noreferrer">
-            <MotionText
-              variants={fadeInUp}
-              fontSize="2xl"
-              fontWeight="bold"
-              color={useColorModeValue('gray.900', 'gray.100')}
+          {/* Title and Description Link */}
+          <NextLink href={project.site || '#'} passHref>
+            <ChakraLink
+              target="_blank"
+              rel="noopener noreferrer"
+              display="block"
+              aria-label={`View project: ${project.title}`}
             >
-              {project.title}
-            </MotionText>
-            <Box width="full">
               <MotionText
                 variants={fadeInUp}
-                bg={useColorModeValue('gray.200', 'gray.700')}
-                rounded="lg"
-                align="left"
-                p="4"
-                fontSize="sm"
+                fontSize="2xl"
+                fontWeight="bold"
+                color={useColorModeValue('gray.900', 'gray.100')}
               >
-                {project.description}
+                {project.title}
               </MotionText>
-              {project.techStack && (
-                <MotionList
+              <Box width="full">
+                <MotionText
                   variants={fadeInUp}
-                  display="flex"
-                  fontSize="xs"
-                  justifyContent="start"
-                  mt="3"
-                  color={useColorModeValue('gray.900', 'gray.100')}
-                  fontWeight="bold"
+                  bg={useColorModeValue('gray.200', 'gray.700')}
+                  rounded="lg"
+                  align="left"
+                  p="4"
+                  fontSize="sm"
                 >
-                  {project.techStack.map((s, index) => (
-                    <ListItem key={index} mr="2">
-                      <i>{s}</i>
-                    </ListItem>
-                  ))}
-                </MotionList>
-              )}
-            </Box>
-          </a>
+                  {project.description}
+                </MotionText>
+                {project.techStack && (
+                  <MotionList
+                    variants={fadeInUp}
+                    display="flex"
+                    fontSize="xs"
+                    justifyContent="start"
+                    mt="3"
+                    color={useColorModeValue('gray.900', 'gray.100')}
+                    fontWeight="bold"
+                  >
+                    {project.techStack.map((s, index) => (
+                      <ListItem key={index} mr="2">
+                        <i>{s}</i>
+                      </ListItem>
+                    ))}
+                  </MotionList>
+                )}
+              </Box>
+            </ChakraLink>
+          </NextLink>
+
+          {/* Icon Buttons */}
           <MotionFlex variants={fadeInUp} pt={2} mt={1} justifyContent="start">
             {project.gitHub && (
-              <Link mr={2} href={project.gitHub} isExternal>
+              <ChakraLink
+                mr={2}
+                href={project.gitHub}
+                isExternal
+                aria-label="View GitHub repository"
+              >
                 <IconButton
                   colorScheme="gray"
                   rounded="full"
                   size="md"
-                  aria-label="medal"
+                  aria-label="View GitHub"
                   icon={<AiOutlineGithub />}
                 />
-              </Link>
+              </ChakraLink>
             )}
-            <Link href={project.site} isExternal>
-              <IconButton
-                colorScheme="gray"
-                rounded="full"
-                size="md"
-                aria-label="medal"
-                icon={<HiOutlineExternalLink />}
-              />
-            </Link>
+            {project.site && (
+              <ChakraLink
+                href={project.site}
+                isExternal
+                aria-label="Visit project site"
+              >
+                <IconButton
+                  colorScheme="gray"
+                  rounded="full"
+                  size="md"
+                  aria-label="Visit Site"
+                  icon={<HiOutlineExternalLink />}
+                />
+              </ChakraLink>
+            )}
           </MotionFlex>
         </MotionBox>
       </MotionBox>
@@ -133,9 +170,13 @@ const ProjectLayoutMed = ({ project }) => {
   );
 };
 
+// --------------------------------------------------
+// LeftProjectLayoutLarge Component
+// --------------------------------------------------
 const LeftProjectLayoutLarge = ({ project }) => {
   return (
     <Flex width="full" display={['none', 'none', 'flex']}>
+      {/* Image Box */}
       <MotionBox
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
@@ -143,10 +184,7 @@ const LeftProjectLayoutLarge = ({ project }) => {
         animate={{
           x: 0,
           opacity: 1,
-          transition: {
-            duration: 0.5,
-            ease: 'easeInOut'
-          }
+          transition: { duration: 0.5, ease: 'easeInOut' },
         }}
         rounded="xl"
         borderWidth="1px"
@@ -155,28 +193,38 @@ const LeftProjectLayoutLarge = ({ project }) => {
         h="24rem"
         textAlign="left"
         align="start"
-        spacing={4}
         shadow="md"
         _hover={{ border: 'md', shadow: 'lg' }}
         overflow="hidden"
         position="relative"
       >
-        <a href={project.site} target="_blank" rel="noopener noreferrer">
-          <AspectRatio ratio={1.85 / 1} w="100%" h="100%" rounded="xl">
-            <Image
-              src={project.imageLight}
-              fallback={<Skeleton />}
-              width={'full'}
-              height={'full'}
-              position="absolute"
-              rounded="xl"
-              objectFit="cover"
-              opacity={0.5}
-              _hover={{ opacity: 1 }}
-            />
-          </AspectRatio>
-        </a>
+        <NextLink href={project.site || '#'} passHref>
+          <ChakraLink
+            target="_blank"
+            rel="noopener noreferrer"
+            display="block"
+            w="100%"
+            h="100%"
+            aria-label={`Visit project site: ${project.title}`}
+          >
+            <AspectRatio ratio={1.85 / 1} w="100%" h="100%" rounded="xl">
+              <Image
+                src={project.imageLight}
+                fallback={<Skeleton />}
+                width="full"
+                height="full"
+                position="absolute"
+                rounded="xl"
+                objectFit="cover"
+                opacity={0.5}
+                _hover={{ opacity: 1 }}
+              />
+            </AspectRatio>
+          </ChakraLink>
+        </NextLink>
       </MotionBox>
+
+      {/* Info Box */}
       <MotionBox
         initial="initial"
         animate="animate"
@@ -188,67 +236,87 @@ const LeftProjectLayoutLarge = ({ project }) => {
         align="right"
       >
         <motion.div variants={stagger}>
-          <a href={project.site} target="_blank" rel="noopener noreferrer" className="text-right">
-            <MotionText
-              variants={fadeInUp}
-              fontSize="3xl"
-              fontWeight="bold"
-              color={useColorModeValue('gray.900', 'gray.100')}
+          {/* Title Link */}
+          <NextLink href={project.site || '#'} passHref>
+            <ChakraLink
+              target="_blank"
+              rel="noopener noreferrer"
+              display="block"
+              aria-label={`View project: ${project.title}`}
             >
-              {project.title}
-            </MotionText>
-          </a>
-          <Box width="full">
-            <MotionText
-              variants={fadeInUp}
-              bg={useColorModeValue('gray.200', 'gray.700')}
-              rounded="lg"
-              align="right"
-              p="4"
-              fontSize="md"
-            >
-              {project.description}
-            </MotionText>
-            {project.techStack && (
-              <MotionList
+              <MotionText
                 variants={fadeInUp}
-                display="flex"
-                fontSize="sm"
-                justifyContent="end"
-                mt="3"
-                color={useColorModeValue('gray.900', 'gray.100')}
+                fontSize="3xl"
                 fontWeight="bold"
+                color={useColorModeValue('gray.900', 'gray.100')}
               >
-                {project.techStack.map((s, index) => (
-                  <ListItem key={index} mr="3">
-                    <i>{s}</i>
-                  </ListItem>
-                ))}
-              </MotionList>
-            )}
-          </Box>
+                {project.title}
+              </MotionText>
+              <Box width="full">
+                <MotionText
+                  variants={fadeInUp}
+                  bg={useColorModeValue('gray.200', 'gray.700')}
+                  rounded="lg"
+                  align="right"
+                  p="4"
+                  fontSize="md"
+                >
+                  {project.description}
+                </MotionText>
+                {project.techStack && (
+                  <MotionList
+                    variants={fadeInUp}
+                    display="flex"
+                    fontSize="sm"
+                    justifyContent="end"
+                    mt="3"
+                    color={useColorModeValue('gray.900', 'gray.100')}
+                    fontWeight="bold"
+                  >
+                    {project.techStack.map((s, index) => (
+                      <ListItem key={index} mr="3">
+                        <i>{s}</i>
+                      </ListItem>
+                    ))}
+                  </MotionList>
+                )}
+              </Box>
+            </ChakraLink>
+          </NextLink>
 
+          {/* Icon Buttons */}
           <MotionFlex variants={fadeInUp} pt={2} mt={1} justifyContent="end">
             {project.gitHub && (
-              <Link mr={2} href={project.gitHub} isExternal>
+              <ChakraLink
+                mr={2}
+                href={project.gitHub}
+                isExternal
+                aria-label="View GitHub repository"
+              >
                 <IconButton
                   colorScheme="gray"
                   rounded="full"
                   size="md"
-                  aria-label="medal"
+                  aria-label="View GitHub"
                   icon={<AiOutlineGithub />}
                 />
-              </Link>
+              </ChakraLink>
             )}
-            <Link href={project.site} isExternal>
-              <IconButton
-                colorScheme="gray"
-                rounded="full"
-                size="md"
-                aria-label="medal"
-                icon={<HiOutlineExternalLink />}
-              />
-            </Link>
+            {project.site && (
+              <ChakraLink
+                href={project.site}
+                isExternal
+                aria-label="Visit project site"
+              >
+                <IconButton
+                  colorScheme="gray"
+                  rounded="full"
+                  size="md"
+                  aria-label="Visit Site"
+                  icon={<HiOutlineExternalLink />}
+                />
+              </ChakraLink>
+            )}
           </MotionFlex>
         </motion.div>
       </MotionBox>
@@ -256,9 +324,13 @@ const LeftProjectLayoutLarge = ({ project }) => {
   );
 };
 
+// --------------------------------------------------
+// RightProjectLayoutLarge Component
+// --------------------------------------------------
 const RightProjectLayoutLarge = ({ project }) => {
   return (
     <Flex width="full" display={['none', 'none', 'flex']}>
+      {/* Info Box */}
       <MotionBox
         initial="initial"
         animate="animate"
@@ -270,70 +342,92 @@ const RightProjectLayoutLarge = ({ project }) => {
         align="left"
       >
         <motion.div variants={stagger}>
-          <a href={project.site} target="_blank" rel="noopener noreferrer">
-            <MotionText
-              variants={fadeInUp}
-              fontSize="3xl"
-              fontWeight="bold"
-              color={useColorModeValue('gray.900', 'gray.100')}
+          {/* Title Link */}
+          <NextLink href={project.site || '#'} passHref>
+            <ChakraLink
+              target="_blank"
+              rel="noopener noreferrer"
+              display="block"
+              aria-label={`View project: ${project.title}`}
             >
-              {project.title}
-            </MotionText>
-          </a>
-          <Box width="full">
-            <MotionText
-              variants={fadeInUp}
-              bg={useColorModeValue('gray.200', 'gray.700')}
-              rounded="lg"
-              align="left"
-              p="4"
-              fontSize="md"
-            >
-              {project.description}
-            </MotionText>
-            {project.techStack && (
-              <MotionList
+              <MotionText
                 variants={fadeInUp}
-                display="flex"
-                fontSize="sm"
-                justifyContent="start"
-                mt="3"
-                color={useColorModeValue('gray.900', 'gray.100')}
+                fontSize="3xl"
                 fontWeight="bold"
+                color={useColorModeValue('gray.900', 'gray.100')}
               >
-                {project.techStack.map((s, index) => (
-                  <ListItem key={index} mr="3">
-                    <i>{s}</i>
-                  </ListItem>
-                ))}
-              </MotionList>
-            )}
-          </Box>
+                {project.title}
+              </MotionText>
+              <Box width="full">
+                <MotionText
+                  variants={fadeInUp}
+                  bg={useColorModeValue('gray.200', 'gray.700')}
+                  rounded="lg"
+                  align="left"
+                  p="4"
+                  fontSize="md"
+                >
+                  {project.description}
+                </MotionText>
+                {project.techStack && (
+                  <MotionList
+                    variants={fadeInUp}
+                    display="flex"
+                    fontSize="sm"
+                    justifyContent="start"
+                    mt="3"
+                    color={useColorModeValue('gray.900', 'gray.100')}
+                    fontWeight="bold"
+                  >
+                    {project.techStack.map((s, index) => (
+                      <ListItem key={index} mr="3">
+                        <i>{s}</i>
+                      </ListItem>
+                    ))}
+                  </MotionList>
+                )}
+              </Box>
+            </ChakraLink>
+          </NextLink>
 
+          {/* Icon Buttons */}
           <MotionFlex variants={fadeInUp} pt={2} mt={1} justifyContent="start">
             {project.gitHub && (
-              <Link mr={2} href={project.gitHub} isExternal>
+              <ChakraLink
+                mr={2}
+                href={project.gitHub}
+                isExternal
+                aria-label="View GitHub repository"
+              >
                 <IconButton
                   colorScheme="gray"
                   rounded="full"
                   size="md"
-                  aria-label="medal"
+                  aria-label="View GitHub"
                   icon={<AiOutlineGithub />}
                 />
-              </Link>
+              </ChakraLink>
             )}
-            <Link href={project.site} isExternal>
-              <IconButton
-                colorScheme="gray"
-                rounded="full"
-                size="md"
-                aria-label="medal"
-                icon={<HiOutlineExternalLink />}
-              />
-            </Link>
+            {project.site && (
+              <ChakraLink
+                href={project.site}
+                isExternal
+                aria-label="Visit project site"
+              >
+                <IconButton
+                  colorScheme="gray"
+                  rounded="full"
+                  size="md"
+                  aria-label="Visit Site"
+                  icon={<HiOutlineExternalLink />}
+                />
+              </ChakraLink>
+            )}
           </MotionFlex>
         </motion.div>
       </MotionBox>
+
+      {/* Image Box */}
       <MotionBox
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
@@ -341,10 +435,7 @@ const RightProjectLayoutLarge = ({ project }) => {
         animate={{
           x: 0,
           opacity: 1,
-          transition: {
-            duration: 0.5,
-            ease: 'easeInOut'
-          }
+          transition: { duration: 0.5, ease: 'easeInOut' },
         }}
         rounded="xl"
         borderWidth="1px"
@@ -353,30 +444,45 @@ const RightProjectLayoutLarge = ({ project }) => {
         h="24rem"
         textAlign="left"
         align="start"
-        spacing={4}
         shadow="md"
         _hover={{ border: 'md', shadow: 'lg' }}
         overflow="hidden"
         position="relative"
       >
-        <a href={project.site} target="_blank" rel="noopener noreferrer">
-          <AspectRatio ratio={1.85 / 1} w="100%" h="100%" rounded="xl">
-            <Image
-              src={project.imageLight}
-              fallback={<Skeleton />}
-              width={'full'}
-              height={'full'}
-              position="absolute"
-              rounded="xl"
-              objectFit="cover"
-              opacity={0.5}
-              _hover={{ opacity: 1 }}
-            />
-          </AspectRatio>
-        </a>
+        <NextLink href={project.site || '#'} passHref>
+          <ChakraLink
+            target="_blank"
+            rel="noopener noreferrer"
+            display="block"
+            w="100%"
+            h="100%"
+            aria-label={`Visit project site: ${project.title}`}
+          >
+            <AspectRatio ratio={1.85 / 1} w="100%" h="100%" rounded="xl">
+              <Image
+                src={project.imageLight}
+                fallback={<Skeleton />}
+                width="full"
+                height="full"
+                position="absolute"
+                rounded="xl"
+                objectFit="cover"
+                opacity={0.5}
+                _hover={{ opacity: 1 }}
+              />
+            </AspectRatio>
+          </ChakraLink>
+        </NextLink>
       </MotionBox>
     </Flex>
   );
 };
 
-export { LeftProjectLayoutLarge, RightProjectLayoutLarge, ProjectLayoutMed };
+// --------------------------------------------------
+// Export all three components
+// --------------------------------------------------
+export {
+  LeftProjectLayoutLarge,
+  RightProjectLayoutLarge,
+  ProjectLayoutMed,
+};

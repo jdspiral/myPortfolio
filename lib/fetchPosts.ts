@@ -40,17 +40,3 @@ export const getDevtoPosts = async () => {
   const dev_posts = await res.json();
   return dev_posts;
 };
-
-// export const getDevtoPosts = async () => {
-//   const params = { username: process.env.DEVTO_USERNAME, per_page: 1000 };
-//   const headers = { "api-key": process.env.DEVTO_APIKEY };
-
-//   const { data }: AxiosResponse = await axios.get(
-//     `${DEVTO_APIURL}/articles/me`,
-//     {
-//       params,
-//       headers
-//     }
-//   );
-//   return data;
-// };

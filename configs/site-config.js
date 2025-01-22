@@ -8,12 +8,12 @@ import {
 import { FiMail } from "react-icons/fi";
 
 const siteConfig = {
-  copyright: `Copyright © ${new Date().getFullYear()} Muhammad Ahmad. All Rights Reserved.`,
+  copyright: `Copyright © ${new Date().getFullYear()} Josh Hathcock. All Rights Reserved.`,
   author: {
-    name: "Muhammad Ahmad",
+    name: "Josh Hathcock",
     accounts: [
       {
-        url: "https://github.com/MA-Ahmad",
+        url: "https://github.com/jdspiral",
         label: "Github Account",
         type: "gray",
         icon: <FaGithub />
@@ -43,8 +43,8 @@ const siteConfig = {
         icon: <FaQuora />
       },
       {
-        url: "mailto:muhammad.ahmad8043@gmail.com",
-        label: "Mail ahmad",
+        url: "mailto:joshdhathcock@gmail.com",
+        label: "Mail Josh",
         type: "gray",
         icon: <FiMail />
       }

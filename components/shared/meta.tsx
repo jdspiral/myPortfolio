@@ -1,14 +1,19 @@
 import Head from 'next/head';
 import { SEO_IMAGE } from 'data/constants';
 
-type Props = {
-  title: string;
-  description?: string;
+type MetaProps = {
+  title?: string;
   keywords?: string;
+  description?: string;
   image?: string;
 };
 
-const Meta = ({ title, keywords, description, image }: Props): JSX.Element => {
+const Meta: React.FC<MetaProps> = ({
+  title = 'Josh Hathcock - Full Stack Developer',
+  keywords = 'web development, programming, web design, react js, chakra ui',
+  description = 'Software Engineer.',
+  image = 'path/to/seo-image.jpg', // Replace SEO_IMAGE with the actual default image path
+}) => {
   return (
     <Head>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,16 +28,9 @@ const Meta = ({ title, keywords, description, image }: Props): JSX.Element => {
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
       <meta name="twitter:card" content="summary_large_image" />
-      <title>{title.includes('Ahmad') ? title : title.concat(' | Muhammad Ahmad')}</title>
+      <title>{title.includes('Hathcock') ? title : title.concat(' | Josh Hathcock')}</title>
     </Head>
-  );
-};
-
-Meta.defaultProps = {
-  title: 'Muhammad Ahmad - Full Stack Developer',
-  keywords: 'web development, programming, web design, react js, chakra ui',
-  description: 'Software Engineer. Lover of web and opensource.',
-  image: SEO_IMAGE
-};
+  )
+}
 
 export default Meta;

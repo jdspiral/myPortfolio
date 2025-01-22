@@ -1,77 +1,69 @@
-import React from 'react'
-import mitt from 'mitt'
+import React from 'react';
+import mitt from 'mitt';
 
-type LocalCache = Map<string, string>
+type LocalCache = Map<string, string>;
 
-const localCache: LocalCache = new Map()
-const emitter = mitt()
+const localCache: LocalCache = new Map();
+const emitter = mitt();
 
 export function useLocalSetting<T>(
   name: string,
   defaultValue: T,
   defer = true
 ) {
-  const storageKey = name
-  const [value, _setValue] = React.useState<T>(() => {
-    if (typeof window === 'undefined' || defer) {
-      return defaultValue // SSR/SSG
-    }
-    const json = window.localStorage.getItem(storageKey)
-    if (!json) {
-      return defaultValue
-    }
-    try {
-      return JSON.parse(json)
-    } catch {
-      return defaultValue
-    }
-  })
+  const storageKey = name;
+
+  // Initialize state with `null` to defer rendering until hydration
+  const [value, _setValue] = React.useState<T | null>(null);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (defer === false) {
-      return
-    }
-    function loadFromStorage() {
-      const json =
-        localCache.get(storageKey) || window.localStorage.getItem(storageKey)
-      if (!json) {
-        return
+    const loadFromStorage = () => {
+      const json = localCache.get(storageKey) || window.localStorage.getItem(storageKey);
+      if (json) {
+        try {
+          const parsedValue = JSON.parse(json);
+          _setValue(parsedValue);
+        } catch {
+          console.error('Failed to parse localStorage value');
+        }
+      } else {
+        _setValue(defaultValue); // Use default if no value is found
       }
-      try {
-        _setValue(JSON.parse(json))
-      } catch { console.log('catch block') }
-    }
-    loadFromStorage()
-    window.addEventListener('storage', loadFromStorage)
-    emitter.on(storageKey, loadFromStorage)
+      setLoading(false); // Mark as loaded
+    };
+
+    // Load data on mount
+    loadFromStorage();
+
+    // Listen for changes to localStorage
+    window.addEventListener('storage', loadFromStorage);
+
     return () => {
-      window.removeEventListener('storage', loadFromStorage)
-      emitter.off(storageKey, loadFromStorage)
+      window.removeEventListener('storage', loadFromStorage);
+    };
+  }, [storageKey, defaultValue]);
+
+  // Render a fallback or loading indicator until hydration is complete
+  if (loading || value === null) {
+    return {
+      value: defaultValue,
+      setValue: (newValue: T) => {}, // Provide a no-op setter for SSR safety
+    };
+  }
+
+  // Function to update both localStorage and state
+  const setValue = (newValue: T) => {
+    try {
+      const json = JSON.stringify(newValue);
+      localCache.set(storageKey, json);
+      window.localStorage.setItem(storageKey, json);
+      _setValue(newValue);
+      emitter.emit(storageKey, newValue);
+    } catch {
+      console.error('Failed to set localStorage value');
     }
-  }, [])
+  };
 
-  const setValue = React.useCallback(
-    (newValue: T) => {
-      const json = JSON.stringify(newValue)
-      window.localStorage.setItem(storageKey, json)
-      localCache.set(storageKey, json)
-      emitter.emit(storageKey)
-      _setValue(newValue)
-    },
-    [_setValue, storageKey]
-  )
-  return [value, setValue] as const
-}
-
-export function readLocalSetting<T>(storageKey: string) {
-  const json =
-    localCache.get(storageKey) || window.localStorage.getItem(storageKey)
-  if (!json) {
-    return
-  }
-  try {
-    return JSON.parse(json) as T
-  } catch {
-    return undefined
-  }
+  return { value, setValue };
 }

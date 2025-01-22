@@ -8,29 +8,29 @@ import {
   useColorModeValue,
   Flex,
   Image,
-} from '@chakra-ui/react'
-import NextLink from 'next/link'
-import { CardTransition } from '../shared/animations/page-transitions'
-import { BlogPost } from '../../interfaces/interface'
-import moment from 'moment'
-import { useLinkColor } from 'components/theme'
-import { Tags } from 'components/shared/Tags'
-import { HeartIcon, CommentIcon } from 'components/shared/icons'
-import DisplayText from 'components/shared/icons/DisplayText'
+} from '@chakra-ui/react';
+import NextLink from 'next/link';
+import { CardTransition } from '../shared/animations/page-transitions';
+import { BlogPost } from '../../interfaces/interface';
+import moment from 'moment';
+import { useLinkColor } from 'components/theme';
+import { Tags } from 'components/shared/Tags';
+import { HeartIcon, CommentIcon } from 'components/shared/icons';
+import DisplayText from 'components/shared/icons/DisplayText';
 
 interface IProps {
-  post: BlogPost
-  isLoading: boolean
-  postDbLikes: number
+  post: BlogPost;
+  isLoading: boolean;
+  postDbLikes: number;
 }
 
-const PostCard: React.SFC<IProps> = ({ post, isLoading, postDbLikes }) => {
-  const linkColor = useLinkColor()
-  const textColor = useColorModeValue('gray.500', 'gray.200')
+const PostCard: React.FC<IProps> = ({ post, isLoading, postDbLikes }) => {
+  const linkColor = useLinkColor();
+  const textColor = useColorModeValue('gray.500', 'gray.200');
   const devIcon = useColorModeValue(
     '/assets/images/logos/dev.png',
     '/assets/images/logos/dev_white.png'
-  )
+  );
 
   return (
     <CardTransition>
@@ -44,7 +44,7 @@ const PostCard: React.SFC<IProps> = ({ post, isLoading, postDbLikes }) => {
         bg={useColorModeValue('white', 'gray.800')}
         align="left"
       >
-        {post.url ? (
+        {post.url && (
           <Tooltip hasArrow label="Dev.to" placement="top">
             <Image
               src={devIcon}
@@ -56,16 +56,14 @@ const PostCard: React.SFC<IProps> = ({ post, isLoading, postDbLikes }) => {
               top="-14px"
             />
           </Tooltip>
-        ) : (
-          ''
         )}
 
         <HStack justifyContent="space-between" isInline>
           <Heading fontSize="lg" textAlign="left" mt={0}>
             <NextLink href={`/blog/${post.slug}`} passHref>
-              <Text as={Link} color={linkColor}>
-                {post.title}
-              </Text>
+              <Link color={linkColor} aria-label={`View post: ${post.title}`}>
+                <Text>{post.title}</Text>
+              </Link>
             </NextLink>
           </Heading>
           <HStack spacing={2} isInline display={['none', 'flex', 'flex']}>
@@ -80,18 +78,14 @@ const PostCard: React.SFC<IProps> = ({ post, isLoading, postDbLikes }) => {
                 &nbsp;
                 <HeartIcon />
               </Flex>
-            ) : (
-              ''
-            )}
+            ) : null}
             {post.comments_count ? (
               <Flex alignItems="center">
                 <DisplayText isLoading={false} value={post.comments_count} />
                 &nbsp;
                 <CommentIcon />
               </Flex>
-            ) : (
-              ''
-            )}
+            ) : null}
           </HStack>
         </HStack>
         <HStack
@@ -118,9 +112,7 @@ const PostCard: React.SFC<IProps> = ({ post, isLoading, postDbLikes }) => {
                   <HeartIcon />
                 </Flex>
               </Tooltip>
-            ) : (
-              ''
-            )}
+            ) : null}
             {post.comments_count ? (
               <Tooltip hasArrow label="Comments" placement="top">
                 <Flex alignItems="center" display={['flex', 'none', 'none']}>
@@ -129,9 +121,7 @@ const PostCard: React.SFC<IProps> = ({ post, isLoading, postDbLikes }) => {
                   <CommentIcon />
                 </Flex>
               </Tooltip>
-            ) : (
-              ''
-            )}
+            ) : null}
           </HStack>
           <HStack spacing={1} alignItems="center" display={['none', 'none', 'flex']}>
             <Tags
@@ -159,7 +149,7 @@ const PostCard: React.SFC<IProps> = ({ post, isLoading, postDbLikes }) => {
         </Text>
       </VStack>
     </CardTransition>
-  )
-}
+  );
+};
 
-export default PostCard
+export default PostCard;

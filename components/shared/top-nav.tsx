@@ -3,6 +3,7 @@ import {
   Flex,
   Avatar,
   HStack,
+  Link as ChakraLink,
   Button,
   Text,
   Link,
@@ -33,7 +34,9 @@ import { MotionBox } from 'components/shared/animations/motion';
 
 const webLinks = [
   { name: 'About', path: '/about' },
-  { name: 'Blog', path: '/blog' }
+  { name: 'Projects', path: '/projects' },
+  { name: 'Tech Stack', path: '/tech-stack' },
+  // { name: 'Blog', path: '/blog' }
 ];
 
 const mobileLinks = [
@@ -69,7 +72,7 @@ const NavLink = (props: NavLinkProps) => {
 
   return (
     <NextLink href={props.path} passHref>
-      <Link
+      <Text
         px={3}
         py={1}
         lineHeight="inherit"
@@ -84,7 +87,7 @@ const NavLink = (props: NavLinkProps) => {
         onClick={() => props.onClose()}
       >
         {props.name}
-      </Link>
+      </Text>
     </NextLink>
   );
 };
@@ -167,7 +170,6 @@ export default function TopNav() {
             <MotionBox whileHover={{ scale: 1.2 }} shadow="md" rounded="full">
               <NextLink href={'/'} passHref>
                 <Avatar
-                  as={Link}
                   size={'sm'}
                   showBorder={true}
                   borderColor={linkColor}
@@ -185,7 +187,7 @@ export default function TopNav() {
                   onClose={onClose}
                 />
               ))}
-              <Menu autoSelect={false} isLazy>
+              {/* <Menu autoSelect={false} isLazy>
                 {({ isOpen, onClose }) => (
                   <>
                     <MenuButton
@@ -235,7 +237,7 @@ export default function TopNav() {
                     </MenuList>
                   </>
                 )}
-              </Menu>
+              </Menu> */}
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>

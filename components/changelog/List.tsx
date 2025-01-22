@@ -17,11 +17,11 @@ import {
 import NextLink from 'next/link';
 import { CardTransition } from 'components/shared/animations/page-transitions';
 import { MotionBox } from 'components/shared/animations/motion';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Tag } from 'components/shared/Tags';
 import { AiFillCheckCircle } from 'react-icons/ai';
 import { GoIssueReopened } from 'react-icons/go';
-import ReactHtmlParser from 'react-html-parser';
+import parse from 'html-react-parser';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLinkColor } from 'components/theme';
 
@@ -62,15 +62,15 @@ const PrList = ({ prList }) => {
                       ) : (
                         <ListIcon as={GoIssueReopened} color="gray.500" />
                       )}
-                      <NextLink href={pr.html_url} passHref>
-                        <Text as={Link} color={linkColor} target="_blank">
+                      <NextLink href={pr.html_url} passHref legacyBehavior>
+                        <Link color={linkColor} target="_blank">
                           {pr.title}
-                        </Text>
+                        </Link>
                       </NextLink>
                     </Heading>
                     <HStack spacing={2} isInline ml={[0, 0, 6]}>
                       <Text fontSize="sm" fontWeight="600" color={textColor}>
-                        {moment(pr.created_at).format('Do MMMM YYYY')}
+                        {dayjs(pr.created_at).format('D MMMM YYYY')}
                       </Text>
                       <HStack spacing={1} alignItems="center" display={['none', 'none', 'flex']}>
                         <Flex alignItems="center" flexWrap="wrap" m="-2px">
@@ -87,7 +87,7 @@ const PrList = ({ prList }) => {
                       </HStack>
                     </HStack>
                     <Box ml={6} mt={2} className="article">
-                      {pr.body && <UnorderedList>{ReactHtmlParser(pr.body_html)}</UnorderedList>}
+                      {pr.body && <UnorderedList>{parse(pr.body_html)}</UnorderedList>}
                     </Box>
                   </CardTransition>
                 </MotionBox>

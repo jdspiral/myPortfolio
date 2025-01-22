@@ -1,48 +1,59 @@
 import * as React from 'react';
-import ProgressiveImage from 'react-progressive-image';
 import { BlurhashCanvas } from 'react-blurhash';
-import { Image } from '@chakra-ui/react';
+import Image from 'next/image';
 
 type LazyImageProps = {
   src: string;
   blurHash: string;
-  size?: string;
   width?: number;
   height?: number;
-  layout?: string;
   rounded?: string;
 };
 
-const LazyImage = (props: LazyImageProps) => {
-  const { src, blurHash, width, height, rounded } = props;
-  const placeholder = '/assets/images/placeholder.png';
+const LazyImage = ({ src, blurHash, width, height, rounded }: LazyImageProps) => {
+  const [isLoading, setIsLoading] = React.useState(true);
 
   return (
-    <ProgressiveImage delay={500} src={src} placeholder={placeholder}>
-      {(src, loading) => {
-        return loading ? (
-          <BlurhashCanvas
-            hash={blurHash}
-            width={width}
-            height={height}
-            punch={1}
-            style={{ borderRadius: rounded ? '5px' : '' }}
-          />
-        ) : (
-          <Image
-            src={src}
-            objectFit="cover"
-            alt="cover image"
-            width={width}
-            height={height}
-            // size={size}
-            // layout={layout}
-            rounded={rounded}
-            fallbackSrc={placeholder}
-          />
-        );
+    <div
+      style={{
+        position: 'relative',
+        width: width || '100%',
+        height: height || '100%',
+        borderRadius: rounded ? '5px' : undefined,
+        overflow: 'hidden',
       }}
-    </ProgressiveImage>
+    >
+      {isLoading && (
+        <BlurhashCanvas
+          hash={blurHash}
+          width={width || 200} // Provide default size if width/height are undefined
+          height={height || 200}
+          punch={1}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            borderRadius: rounded ? '5px' : undefined,
+          }}
+        />
+      )}
+
+      <Image
+        src={src}
+        alt="cover image"
+        width={width}
+        height={height}
+        placeholder="empty" // Skip Next.js's blur placeholder since we're using Blurhash
+        onLoadingComplete={() => setIsLoading(false)}
+        style={{
+          objectFit: 'cover',
+          borderRadius: rounded ? '5px' : undefined,
+          display: isLoading ? 'none' : 'block',
+        }}
+      />
+    </div>
   );
 };
 

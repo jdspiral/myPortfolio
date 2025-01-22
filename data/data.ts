@@ -1,11 +1,11 @@
 export const companies = [
   {
-    title: 'Nalikes Studio',
-    alt: 'NS image',
-    role: 'Senior Software Engineer',
-    skills: ['web3', 'nextjs', 'rails', 'typescript', 'react', 'aws', 'heroku'],
-    period: '2023 - Present',
-    logo: '/assets/images/logos/nalikes-studio.png'
+    title: 'BalancedWork',
+    alt: 'BalancedWork.ai',
+    role: 'Full Stack Engineer',
+    skills: ['Next.js', 'React', 'TypeScript', 'PostgreSQL'],
+    period: 'Sept 2024 - Present',
+    logo: '/assets/images/logos/balancedwork.png'
   },
   {
     title: 'Big Wolf Games',

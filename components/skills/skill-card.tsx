@@ -7,9 +7,9 @@ import {
   Box,
   Link,
   Image,
-  Skeleton
+  Skeleton,
 } from '@chakra-ui/react';
-import { usePalette } from 'react-palette';
+import { usePalette } from 'color-thief-react'; // Replacing react-palette
 import { MotionBox } from '../shared/animations/motion';
 import { item } from '../shared/animations/page-transitions';
 import NextLink from 'next/link';
@@ -17,7 +17,7 @@ import { useLinkColor } from 'components/theme';
 
 const SkillCard = ({ name, image, link, description }) => {
   const linkColor = useLinkColor();
-  const { data, loading } = usePalette(image);
+  const { data, loading } = usePalette(image, 10, 'rgbString'); // Updated hook
 
   return (
     <MotionBox variants={item}>
@@ -45,7 +45,7 @@ const SkillCard = ({ name, image, link, description }) => {
                 boxShadow="inset 0 0 1px 1px rgba(0, 0, 0, 0.015)"
               >
                 <Box
-                  bg={data.lightVibrant}
+                  bg={data?.[0] || 'gray.200'} // Fallback for dynamic color
                   position="absolute"
                   top={0}
                   bottom={0}
@@ -60,7 +60,6 @@ const SkillCard = ({ name, image, link, description }) => {
                     src={image}
                     height={26}
                     width={26}
-                    // layout="fixed"
                     rounded="md"
                   />
                 )}
